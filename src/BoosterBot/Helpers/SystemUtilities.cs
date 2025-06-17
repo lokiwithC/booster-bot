@@ -89,6 +89,39 @@ internal class SystemUtilities
         mouse_event((int)(MouseEventFlags.LEFTUP), 0, 0, 0, 0);
     }
 
+    public static void ClickAndDrag(Point start, Point end) => ClickAndDrag(start.X, start.Y, end.X, end.Y);
+
+    /// <summary>
+    /// Used to simulate a swipe from one point to another on the screen.
+    /// </summary>
+    public static void ClickAndDrag(int startX, int startY, int endX, int endY)
+    {
+        // Determine the distance to swipe
+        int distanceX = endX - startX;
+        int distanceY = endY - startY;
+
+        // Determine the number of steps and the size of each step
+        int steps = 50;
+        float stepX = distanceX / (float)steps;
+        float stepY = distanceY / (float)steps;
+
+        // Press down the mouse button
+        Cursor.Position = new Point(startX, startY);
+        mouse_event((int)(MouseEventFlags.LEFTDOWN), 0, 0, 0, 0);
+        Thread.Sleep(200);  // Adjust sleep time as needed
+
+        // Gradually move the mouse to the end position
+        for (int i = 0; i < steps; i++)
+        {
+            Cursor.Position = new Point(startX + (int)(stepX * i), startY + (int)(stepY * i));
+            Thread.Sleep(1);
+        }
+
+        // Release the mouse button
+        Cursor.Position = new Point(endX, endY);
+        Thread.Sleep(200);  // Adjust sleep time as needed
+        mouse_event((int)(MouseEventFlags.LEFTUP), 0, 0, 0, 0);
+    }
     /// <summary>
     /// Retrieves the game process and returns the dimensions of the process window.
     /// </summary>

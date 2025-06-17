@@ -438,6 +438,8 @@ namespace BoosterBot
             _config.GetWindowPositions();
             var rand = new Random();
             Logger.Log(_config.Localizer, "Log_BlindReset", _config.LogPath);
+            ClickClaim();
+            Thread.Sleep(rand.Next(500, 750));
             ResetClick();
             Thread.Sleep(rand.Next(500, 750));
             ClearError();

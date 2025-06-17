@@ -47,6 +47,7 @@ internal class Program
         string? gameMode = null;
         string? maxConquestTier = null;
         int? maxTurns = null;
+        int? conquestPos = null;
 
         // Parse flags:
         if (args.Length > 0)
@@ -104,6 +105,10 @@ internal class Program
                     case "--event":
                         ltm = true;
                         break;
+                    case "-cp":
+                    case "--conquestpos":
+                        conquestPos = int.Parse(args[i + 1]);
+                        break;
                     case "--repair":
                         repair = true;
                         break;
@@ -132,6 +137,7 @@ internal class Program
                 downscaled ??= bool.Parse(_configuration["downscaledMode"] ?? "false");
                 ltm ??= bool.Parse(_configuration["eventModeActive"] ?? "false");
                 scaling ??= double.Parse(_configuration["scaling"] ?? "1.0");
+                conquestPos ??= int.Parse(_configuration["conquestPos"] ?? "0");
 
                 if (!string.IsNullOrWhiteSpace(_configuration["defaultRunSettings:enabled"]) && bool.Parse(_configuration["defaultRunSettings:enabled"] ?? "false"))
                 {
@@ -175,7 +181,7 @@ internal class Program
 
                 var type = (GameMode)mode;
                 var logPath = $"logs\\{type.ToString().ToLower()}-log-{DateTime.Now.ToString("yyyyMMddHHmmss")}.txt";
-                var config = new BotConfig(_configuration, _localizer, (double)scaling, (bool)verbose, autoplay, saveScreens, logPath, (bool)ltm, (bool)downscaled);
+                var config = new BotConfig(_configuration, _localizer, (double)scaling, (bool)verbose, autoplay, saveScreens, logPath, (bool)ltm, (bool)downscaled, (int)conquestPos);
                 IBoosterBot bot = mode switch
                 {
                     1 => new ConquestBot(config, retreat ?? 0, maxTier),

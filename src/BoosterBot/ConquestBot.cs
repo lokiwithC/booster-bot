@@ -114,10 +114,34 @@ namespace BoosterBot
         {
             Log("Conquest_Log_Menu");
 
-            for (int x = 0; x < 3; x++)
+            if (_config.GetUseEvent() && _config.GetConquestPos() > 2)
             {
+                Log("Conquest_Log_Menu_Event");
+                for (int x = 0; x < _config.GetConquestPos(); x++)
+                {
+                    Thread.Sleep(1000);
+                    SystemUtilities.ClickAndDrag(_config.ConquestMenu0Point, _config.ConquestMenu1Point);
+                    Thread.Sleep(1000);
+                }
+                for (int x = 0; x < _config.GetConquestPos() - 2; x++)
+                {
+                    Thread.Sleep(1000);
+                    SystemUtilities.ClickAndDrag(_config.ConquestMenu1Point, _config.ConquestMenu0Point);
+                    Thread.Sleep(1000);
+                }
+                Thread.Sleep(2000);
                 SystemUtilities.Click(_config.ConquestBannerPoint);
-                Thread.Sleep(1000);
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Log("Conquest_Log_Menu_Conquest");
+                for (int x = 0; x < 1; x++)
+                {
+                    Thread.Sleep(2000);
+                    SystemUtilities.Click(_config.ConquestBannerPoint);
+                    Thread.Sleep(2000);
+                }
             }
         }
 
@@ -310,7 +334,11 @@ namespace BoosterBot
             Log("Log_Match_Playing");
             Thread.Sleep(2000);
             var active = true;
-            _game.ClickSnap();
+            for (int x = 0; x < 3; x++)
+            {
+                Thread.Sleep(300);
+                _game.ClickSnap();
+            }
 
             _matchTimer = new Stopwatch();
             _matchTimer.Start();
@@ -482,6 +510,7 @@ namespace BoosterBot
             else if (Check(() => _game.CanIdentifyConquestTicketClaim()))
             {
                 Log("Conquest_Log_Match_ProcessingPostMatch");
+                Thread.Sleep(1000);
                 _game.ClickClaim();
             }
 

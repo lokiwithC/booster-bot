@@ -19,6 +19,7 @@ namespace BoosterBot
         private readonly bool _autoplay;
         private readonly bool _saveScreens;
         private readonly bool _useEvent;
+        private readonly int _conquestPos;
         private readonly bool _downscaled;
         private readonly string _logPath;
         private readonly IConfiguration _settings;
@@ -87,6 +88,34 @@ namespace BoosterBot
                 {
                     X = BaseConquestBannerPoint.X + rand.Next(-bound, bound),
                     Y = BaseConquestBannerPoint.Y + rand.Next(-bound, bound)
+                };
+            }
+        }
+        private Point BaseConquestMenu0Point { get; set; }
+        public Point ConquestMenu0Point
+        {
+            get
+            {
+                var rand = new Random();
+                var bound = (int)(50 * Scaling);
+                return new Point
+                {
+                    X = BaseConquestMenu0Point.X + rand.Next(-bound, bound),
+                    Y = BaseConquestMenu0Point.Y
+                };
+            }
+        }
+        private Point BaseConquestMenu1Point { get; set; }
+        public Point ConquestMenu1Point
+        {
+            get
+            {
+                var rand = new Random();
+                var bound = (int)(50 * Scaling);
+                return new Point
+                {
+                    X = BaseConquestMenu1Point.X + rand.Next(-bound, bound),
+                    Y = BaseConquestMenu1Point.Y
                 };
             }
         }
@@ -171,7 +200,7 @@ namespace BoosterBot
         public List<Point> Cards { get; set; }
         public List<Point> Locations { get; set; }
 
-        public BotConfig(IConfiguration settings, LocalizationManager localizer, double scaling, bool verbose, bool autoplay, bool saveScreens, string logPath, bool useEvent, bool downscaled)
+        public BotConfig(IConfiguration settings, LocalizationManager localizer, double scaling, bool verbose, bool autoplay, bool saveScreens, string logPath, bool useEvent, bool downscaled, int ConquestPos)
         {
             _settings = settings;
             _localizer = localizer;
@@ -182,7 +211,12 @@ namespace BoosterBot
             _downscaled = downscaled;
             _logPath = logPath;
             _useEvent = useEvent;
+            _conquestPos = useEvent ? ConquestPos : 0;
         }
+
+        public bool GetUseEvent() => _useEvent;
+        
+        public int GetConquestPos() => _conquestPos;
 
         public int Scale(int x) => (int)(Scaling * x);
 
@@ -292,6 +326,18 @@ namespace BoosterBot
             {
                 X = Window.Left + Center,
                 Y = Window.Top + (_useEvent ? Scale(540) : Scale(330)) // Adjust click point for LTM
+            };
+
+            BaseConquestMenu0Point = new Point
+            {
+                X = Window.Left + Center,
+                Y = Window.Top + Scale(330)
+            };
+
+            BaseConquestMenu1Point = new Point
+            {
+                X = Window.Left + Center,
+                Y = Window.Top + Scale(663)
             };
 
             BaseSnapPoint = new Point
